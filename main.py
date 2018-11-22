@@ -9,10 +9,11 @@ import juggler
 
 
 def main():
-    # 遊ぶ機種を選択
-    dic_models = {"ImEXAE":"アイムジャグラーEXAE"}
+    
     print("PyJuggler by s6m1z5")
     print("--------------------")
+    # 遊ぶ機種を選択
+    dic_models = {"ImEXAE":"アイムジャグラーEXAE"}
     print("[機種選択]")
     for key, value in dic_models.iteritems():
         print "%s\t:%s" %(key, value)
@@ -37,10 +38,33 @@ def main():
             break
     print("--------------------")
     model = juggler.ImJugglerEX(settei)
-    print("設定:%g"%model.setting)
-    print("BIG確率:%g"%model.big)
-    print("REG確率:%g"%model.reg)
-    print("ここから先はできてないので終了")
+    print("[スペック]")
+    model.show_spec()
+    print("--------------------")
+
+    #print("Enterを押すと抽選,kの後にEnterで終了")
+    while(True):
+        
+        model.show_status()
+        print("Enter:抽選, h+Enter:スペック表示, j+Enter:履歴表示, k+Enter:カウンタ表示, l+Enter:終了")
+        finger = raw_input()
+        
+        if(finger=="h"):
+            model.show_spec()
+        elif(finger=="j"):
+            model.show_graph()
+        elif(finger=="k"):
+            model.show_counter()
+        elif(finger=="l"):
+            break
+        else:
+            result = model.draw()
+            print(result)
+        print("--------------------")
+
+
+    print("おわり")
+
 
 if __name__ == '__main__':
     main()
