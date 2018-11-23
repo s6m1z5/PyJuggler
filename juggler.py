@@ -33,7 +33,7 @@ class Juggler(object):
         self.weight_pierrot = np.array([1.0-1./self.pierrot, 1./self.pierrot])
         self.weight_bell = np.array([1.0-1./self.bell, 1./self.bell])
 
-        self.flag_big = False
+        self.flag_big = False #当たりフラグ
         self.flag_reg = False
 
     #スペック表示
@@ -42,6 +42,7 @@ class Juggler(object):
         print("設定:%d"%self.setting)
         print("BIG確率:1/%g"%self.big)
         print("REG確率:1/%g"%self.reg)
+        print("ボーナス合算:1/%g"%((self.reg*self.big)/(self.reg+self.big-1.)))
         print("ブドウ確率:1/%g"%self.grape)
         print("チェリー確率:1/%g"%self.cherry)
 
@@ -55,8 +56,10 @@ class Juggler(object):
 
     #小役カウンタを表示
     def show_counter(self):
-        print("ブドウ:%d, チェリー:%d, リプレイ:%d, ベル:%d, ピエロ:%d"%(self.counter[2], self.counter[3], self.counter[4], self.counter[5], self.counter[6]))
-        #print("ブドウ確率:1/%g, チェリー確率:1/%g,")
+        #print("ブドウ:%d, チェリー:%d, リプレイ:%d, ベル:%d, ピエロ:%d"%(self.counter[2], self.counter[3], self.counter[4], self.counter[5], self.counter[6]))
+        n_koyaku = float(self.rotation_total)/(self.counter[2:]+1e-07)
+        print("ブドウ確率:1/%g, チェリー確率:1/%g, リプレイ確率:1/%g, ベル確率:1/%g, ピエロ確率:1/%g"%(n_koyaku[0], n_koyaku[1], n_koyaku[2], n_koyaku[3], n_koyaku[4]))
+
 
     #スランプグラフを表示
     def show_graph(self, name="slump_graph", save=False):
@@ -64,7 +67,7 @@ class Juggler(object):
         ax = fig.add_subplot(111)
         ax.plot(self.slump, color="r", label="slump")
         ax.set_title("Slump Graph")
-        ax.set_xlabel("# of rotation")
+        ax.set_xlabel("# of draw")
         ax.set_ylabel("medals")
         ax.grid(color='gray')
         ax.legend()
@@ -188,4 +191,5 @@ if __name__ == '__main__':
     for i in range(10000):
         myjag.draw()
     myjag.show_status()
-    myjag.show_graph()
+    myjag.show_counter()
+    myjag.show_graph(name="slump_graph", save=True)

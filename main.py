@@ -12,14 +12,14 @@ def main():
     
     print("PyJuggler by s6m1z5")
     print("--------------------")
-    # 遊ぶ機種を選択
+
     dic_models = {"ImEXAE":"アイムジャグラーEXAE"}
     print("[機種選択]")
     for key, value in dic_models.iteritems():
         print "%s\t:%s" %(key, value)
 
     while(True):
-        key_in = raw_input("選択してください:")
+        key_in = raw_input("選択してください[例:ImEXAE]:")
         if key_in not in dic_models.keys():
             print("Error! 正しい名前を選んでください")
         else:
@@ -36,17 +36,17 @@ def main():
         else:
             print("設定%dで遊びます"%settei)
             break
-    print("--------------------")
     model = juggler.ImJugglerEX(settei)
+
+    print("--------------------")
     print("[スペック]")
     model.show_spec()
     print("--------------------")
 
-    #print("Enterを押すと抽選,kの後にEnterで終了")
     while(True):
         
         model.show_status()
-        print("Enter:抽選, h+Enter:スペック表示, j+Enter:履歴表示, k+Enter:カウンタ表示, l+Enter:終了")
+        print("Enter:抽選, h+Enter:スペック表示, j+Enter:グラフ表示, k+Enter:小役カウンタ表示, l+Enter:終了")
         finger = raw_input()
         
         if(finger=="h"):
