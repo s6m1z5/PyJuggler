@@ -76,17 +76,11 @@ class Juggler(object):
             p_total = "ボーナス合算確率:1/%g"%(float(self.rotation_total)/(self.counter[0]+self.counter[1]))
         print("現在の回転数:%d, 差枚数:%d, 総回転数:%d, BIG:%d回, REG:%d回"%(self.rotation, self.medal, self.rotation_total, self.counter[0], self.counter[1]))
         print(p_big+p_reg+p_total)
-        #n_big = float(self.rotation_total)/(self.counter[0]+1e-07)
-        #n_reg = float(self.rotation_total)/(self.counter[1]+1e-07)
-        #n_both = float(self.rotation_total)/(self.counter[0]+self.counter[1]+1e-07)
-        #print("BIG確率:1/%g, REG確率:1/%g, ボーナス合算:1/%g"%(n_big, n_reg, n_both))
 
     #小役カウンタを表示(要修正)
     def show_counter(self):
-        #print("ブドウ:%d, チェリー:%d, リプレイ:%d, ベル:%d, ピエロ:%d"%(self.counter[2], self.counter[3], self.counter[4], self.counter[5], self.counter[6]))
         n_koyaku = float(self.rotation_total)/(self.counter[2:]+1e-07)
         print("ブドウ確率:1/%g, チェリー確率:1/%g, リプレイ確率:1/%g, ベル確率:1/%g, ピエロ確率:1/%g"%(n_koyaku[0], n_koyaku[1], n_koyaku[2], n_koyaku[3], n_koyaku[4]))
-
 
     #スランプグラフを表示
     def show_graph(self, name="slump_graph", save=False):
@@ -103,6 +97,29 @@ class Juggler(object):
             fig.savefig(name+".png")
         plt.close(fig)
 
+    
+    #大当たり履歴の表示
+    def show_history(self, name="history", save=False):
+        history = np.array(self.log)
+        if history.shape[0]>1:
+            index = np.arange(history.shape[0], 0, -1)
+            color_list = np.copy(history[:,1])
+            color_list[color_list=="B"]="orange"
+            color_list[color_list=="R"]="limegreen"
+            fig = plt.figure(name)
+            ax = fig.add_subplot(111)
+            ax.bar(index, history[:, 0], tick_label=index, color=color_list)
+            for x, y, z in zip(index, history[:,0], history[:,1]):
+                plt.text(x, y, y, ha="center", va="bottom")
+                plt.text(x, y, z, ha="center", va="top")
+            ax.set_title("BONUS History")
+            ax.set_ylabel("# of draw")
+            ax.set_xlabel("N bonuses ago")
+            plt.show(fig)
+            if save==True:
+                fig.savefig(name+".png")
+            plt.close(fig)
+
     #抽選
     def draw(self):
         #MAXBET時の処理
@@ -112,17 +129,20 @@ class Juggler(object):
         #フラグが成立している場合は払い出し優先(生入りは考慮しない)
         #それ以外は[単独BIG|チェリーBIG|単独REG|チェリーREG|ブドウ|チェリー(ボナなし)|リプレイ|ピエロ|ベル|ハズレ]のテーブルで抽選を行う
         if ((self.flag_big==True) or (self.flag_reg==True)):
-            self.rotation = 0
+            #self.rotation = 0
             if self.flag_big==True:
                 result = "BIG"
                 self.medal += 325
                 self.flag_big = False
                 self.counter[0] += 1
+                self.log.append([self.rotation, "B"])
             if self.flag_reg==True:
                 result = "REG"
                 self.medal += 104
                 self.flag_reg = False
                 self.counter[1] += 1
+                self.log.append([self.rotation, "R"])
+            self.rotation = 0
         else:
             table = np.random.randint(65536)
             if 0<=table<self.th_big_single:
@@ -174,7 +194,6 @@ class Juggler(object):
                 # ハズレ
                 result = "ハズレ"
 
-        self.log.append(result)
         self.slump.append(self.medal)
         
         return result
@@ -241,8 +260,9 @@ if __name__ == '__main__':
     """
 
     #シミュレーションする
-    for i in range(100):
+    for i in range(1000):
         myjag.draw()
     myjag.show_status()
     myjag.show_counter()
     myjag.show_graph(name="slump_graph", save=True)
+    myjag.show_history(save=True)
