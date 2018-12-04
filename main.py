@@ -47,7 +47,7 @@ def main():
         
         model.show_status()
         print("Enter:抽選, h+Enter:スペック表示, j+Enter:グラフ表示, k+Enter:小役カウンタ表示, l+Enter:終了")
-        finger = raw_input()
+        finger = raw_input(">>")
         
         if(finger=="h"):
             model.show_spec()

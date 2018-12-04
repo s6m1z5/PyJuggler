@@ -163,12 +163,12 @@ class Juggler(object):
             elif self.th_replay<=table<self.th_bell:
                 # ベル
                 self.medal += 14
-                self.counter[6] += 1
+                self.counter[5] += 1
                 result = "ベル"
             elif self.th_bell<=table<self.th_pierrot:
                 # ピエロ
                 self.medal += 10
-                self.counter[5] += 1
+                self.counter[6] += 1
                 result = "ピエロ"
             elif self.th_pierrot<=table:
                 # ハズレ
@@ -182,18 +182,6 @@ class Juggler(object):
 class ImJugglerEX(Juggler):
 
     def __init__(self, settei=1):
-
-        #self.big_prob = np.array([287.4, 282.5, 282.5, 273.1, 273.1, 268.6])#スペック表示しやすいように分母で入力
-        #self.reg_prob = np.array([455.1, 442.8, 348.6, 321.3, 268.6, 268.6])
-        #self.grape_prob = np.array([6.49, 6.49, 6.49, 6.49, 6.49, 6.18])
-        #self.cherry_prob = np.array([33.6, 33.6, 33.4, 33.2, 33.0, 33.0])
-        #self.big = self.big_prob[settei-1]
-        #self.reg = self.reg_prob[settei-1]
-        #self.grape = self.grape_prob[settei-1]
-        #self.cherry = self.cherry_prob[settei-1]
-        #self.replay = 7.3
-        #self.pierrot = 1092.3
-        #self.bell = 1092.3
         
         #設定差のある確率
         self.big_single_prob = np.array([160, 164, 164, 168, 168, 172])           #単独BIG確率,x/65536のxで表現
@@ -222,7 +210,7 @@ class ImJugglerEX(Juggler):
 # 使用例
 if __name__ == '__main__':
     
-    myjag = ImJugglerEX(1)
+    myjag = ImJugglerEX(6)
     print("--------------------")
     myjag.show_spec()
     print("--------------------")
@@ -253,7 +241,7 @@ if __name__ == '__main__':
     """
 
     #シミュレーションする
-    for i in range(5000):
+    for i in range(100):
         myjag.draw()
     myjag.show_status()
     myjag.show_counter()
